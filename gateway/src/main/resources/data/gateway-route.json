@@ -1,0 +1,17 @@
+[
+  {
+    "filters": [
+    ],
+    "id": "d-server",
+    "order": 0,
+    "predicates": [
+      {
+        "args": {
+          "_genkey_0": "/api/v2/d/**"
+        },
+        "name": "Path"
+      }
+    ],
+    "uri": "lb://d-server"
+  }
+]
