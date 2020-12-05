@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.j.openproject.annotation.RestPathController;
 import com.j.openproject.base.CommonRs;
+import com.j.openproject.dto.UserDto;
 import com.j.openproject.service.UserService;
 
 import io.swagger.annotations.Api;
@@ -29,6 +30,7 @@ public class UserController extends BaseController {
     @GetMapping("/check/token")
     public CommonRs<String> getUserByToken(@RequestParam(value = "token") String token,
             @RequestParam(value = "urlPath") String urlPath) {
+        UserDto d =  userService.getUserByToken(token, urlPath);
         return CommonRs.createSuccessRs("这是 d 11111 ");
     }
 

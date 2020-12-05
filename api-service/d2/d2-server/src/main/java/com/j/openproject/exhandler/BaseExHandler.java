@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -32,6 +33,20 @@ public abstract class BaseExHandler {
     public CommonRs notValidExceptionHandler(MethodArgumentNotValidException e) {
         CommonRs rs = CommonRs.createWithCode(CommonRsCode.VALID_ERROR);
         rs.setData(getErrorMsg(e.getBindingResult().getAllErrors()));
+        return rs;
+    }
+
+    /**
+     * 缺少参数异常
+     *
+     * @param ex
+     * @return
+     */
+    @ExceptionHandler({ MissingServletRequestParameterException.class })
+    @ResponseBody
+    public CommonRs requestMissingServletRequest(MissingServletRequestParameterException ex) {
+        CommonRs rs = CommonRs.createWithCode(CommonRsCode.VALID_ERROR);
+        rs.setData("缺少必要参数,参数名称为" + ex.getParameterName());
         return rs;
     }
 
