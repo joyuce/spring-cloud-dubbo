@@ -31,6 +31,7 @@ public class UserController extends BaseController {
     public CommonRs<String> getUserByToken(@RequestParam(value = "token") String token,
             @RequestParam(value = "urlPath") String urlPath) {
         UserDto d =  userService.getUserByToken(token, urlPath);
+        log.info(d.toString());
         return CommonRs.createSuccessRs("这是 d 11111 ");
     }
 
