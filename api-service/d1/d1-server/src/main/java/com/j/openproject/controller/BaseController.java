@@ -3,6 +3,7 @@ package com.j.openproject.controller;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -20,15 +21,17 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public abstract class BaseController {
 
-    /** 异步处理线程池 */
+    /**
+     * 异步处理线程池
+     */
     protected FlexThreadPool taskPool = new FlexThreadPool(8);
 
-    private final String UNKNOWN = "unknown";
-
-    private final String INDEX = ",";
-
     protected HttpServletRequest getRequest() {
-        return ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        RequestAttributes attributes = RequestContextHolder.getRequestAttributes();
+        if (attributes == null) {
+            return null;
+        }
+        return ((ServletRequestAttributes) attributes).getRequest();
     }
 
     public String getIpAddress() {
@@ -48,19 +51,19 @@ public abstract class BaseController {
         String ip = null;
         try {
             ip = request.getHeader("x-forwarded-for");
-            if (StringUtils.isEmpty(ip) || UNKNOWN.equalsIgnoreCase(ip)) {
+            String unknown = "unknown";
+            if (StringUtils.isEmpty(ip) || unknown.equalsIgnoreCase(ip)) {
                 ip = request.getHeader("Proxy-Client-IP");
             }
-            if (StringUtils.isEmpty(ip) || UNKNOWN.equalsIgnoreCase(ip)) {
-                ip = request.getHeader("WL-Proxy-Client-IP");
+            if (StringUtils.isEmpty(ip) || unknown.equalsIgnoreCase(ip)) {
             }
-            if (StringUtils.isEmpty(ip) || UNKNOWN.equalsIgnoreCase(ip)) {
+            if (StringUtils.isEmpty(ip) || unknown.equalsIgnoreCase(ip)) {
                 ip = request.getHeader("HTTP_CLIENT_IP");
             }
-            if (StringUtils.isEmpty(ip) || UNKNOWN.equalsIgnoreCase(ip)) {
+            if (StringUtils.isEmpty(ip) || unknown.equalsIgnoreCase(ip)) {
                 ip = request.getHeader("HTTP_X_FORWARDED_FOR");
             }
-            if (StringUtils.isEmpty(ip) || UNKNOWN.equalsIgnoreCase(ip)) {
+            if (StringUtils.isEmpty(ip) || unknown.equalsIgnoreCase(ip)) {
                 ip = request.getRemoteAddr();
             }
         } catch (Exception e) {
@@ -68,8 +71,9 @@ public abstract class BaseController {
         }
         //使用代理，则获取第一个IP地址
         if (StringUtils.isNotEmpty(ip) && ip.length() > 15) {
-            if (ip.indexOf(INDEX) > 0) {
-                ip = ip.substring(0, ip.indexOf(INDEX));
+            String index = ",";
+            if (ip.indexOf(index) > 0) {
+                ip = ip.substring(0, ip.indexOf(index));
             }
         }
         return ip;

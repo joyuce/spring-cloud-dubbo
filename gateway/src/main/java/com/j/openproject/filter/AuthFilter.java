@@ -62,7 +62,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
                     .header("userName", URLEncoder.encode(userDto.getUserName(), "UTF-8")).build();
         } catch (UnsupportedEncodingException e) {
             log.error("请求头增加用户参数异常", e);
-            return setFailedRequest(HttpStatus.UNAUTHORIZED, exchange);
+            return setFailedRequest(HttpStatus.INTERNAL_SERVER_ERROR, exchange);
         }
         //将现在的request 变成 change对象
         ServerWebExchange build = exchange.mutate().request(host).build();
