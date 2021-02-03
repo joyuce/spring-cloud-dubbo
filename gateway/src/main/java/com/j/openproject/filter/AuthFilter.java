@@ -49,7 +49,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
         log.info(requestUri);
         String token = serverHttpRequest.getHeaders().getFirst("token");
         if (StringUtils.isBlank(token)) {
-            return setFailedRequest(HttpStatus.UNAUTHORIZED, exchange);
+            return setFailedRequest(HttpStatus.BAD_REQUEST, exchange);
         }
         UserDto userDto = userService.getUserByToken(token, requestUri);
         if (userDto == null) {
@@ -62,6 +62,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
                     .header("userName", URLEncoder.encode(userDto.getUserName(), "UTF-8")).build();
         } catch (UnsupportedEncodingException e) {
             log.error("请求头增加用户参数异常", e);
+            return setFailedRequest(HttpStatus.UNAUTHORIZED, exchange);
         }
         //将现在的request 变成 change对象
         ServerWebExchange build = exchange.mutate().request(host).build();
